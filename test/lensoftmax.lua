@@ -36,5 +36,5 @@ for t=1, firstcycle do
 	xlua.progress(t, firstcycle)
 end
 if psg then
-	print("test one pass")
+	print("test pass")
 end
