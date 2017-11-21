@@ -1,5 +1,9 @@
 local LenSoftMax, _ = torch.class('lenn.LenSoftMax', 'nn.Module')
 
+function LenSoftMax:__init()
+   self.gradInput = {torch.Tensor()}
+end
+
 function LenSoftMax:updateOutput(input)
    local _input, _len = unpack(input)
    _input.THLENN.LenSoftMax_updateOutput(
@@ -15,9 +19,13 @@ function LenSoftMax:updateGradInput(input, gradOutput)
    _input.THLENN.LenSoftMax_updateGradInput(
       _input:cdata(),
       gradOutput:cdata(),
-      self.gradInput:cdata(),
+      self.gradInput[1]:cdata(),
       self.output:cdata(),
       _len:cdata()
    )
+   if not self.gradInput[2] then
+      self.gradInput[2] = _len.new()
+   end
+   self.gradInput[2]:resizeAs(_len):zero()
    return self.gradInput
 end
