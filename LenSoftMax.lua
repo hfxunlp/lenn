@@ -1,6 +1,7 @@
-local LenSoftMax, _ = torch.class('lenn.LenSoftMax', 'nn.Module')
+local LenSoftMax, parent = torch.class('lenn.LenSoftMax', 'nn.Module')
 
 function LenSoftMax:__init()
+   parent.__init(self)
    self.gradInput = {torch.Tensor()}
 end
 
