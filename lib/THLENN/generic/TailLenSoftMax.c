@@ -1,8 +1,8 @@
 #ifndef TH_GENERIC_FILE
-#define TH_GENERIC_FILE "generic/LenSoftMax.c"
+#define TH_GENERIC_FILE "generic/TailLenSoftMax.c"
 #else
 
-void THLENN_(LenSoftMax_updateOutput)(
+void THLENN_(TailLenSoftMax_updateOutput)(
           THLENNState *state,
           THTensor *input,
           THTensor *output,
@@ -34,25 +34,25 @@ void THLENN_(LenSoftMax_updateOutput)(
     real inputMax = -THInf;
     accreal sum;
 
-    ptrdiff_t d, ld = (ptrdiff_t)len_data[t];
-    for (d = 0; d < ld; d++)
+    ptrdiff_t d, ld = dim - (ptrdiff_t)len_data[t];
+    for (d = ld; d < dim; d++)
     {
       if (input_ptr[d] >= inputMax) inputMax = input_ptr[d];
     }
 
     sum = 0;
-    for (d = 0; d < ld; d++)
+    for (d = ld; d < dim; d++)
     {
       real z = exp(input_ptr[d] - inputMax);
       output_ptr[d] = z;
       sum += z;
     }
-    for (d = ld; d < dim; d++)
+    for (d = 0; d < ld; d++)
     {
       output_ptr[d] = 0;
     }
 
-    for (d = 0; d < ld; d++)
+    for (d = ld; d < dim; d++)
     {
       output_ptr[d] *= 1/sum;
     }
@@ -61,7 +61,7 @@ void THLENN_(LenSoftMax_updateOutput)(
   THTensor_(free)(input);
 }
 
-void THLENN_(LenSoftMax_updateGradInput)(
+void THLENN_(TailLenSoftMax_updateGradInput)(
           THLENNState *state,
           THTensor *input,
           THTensor *gradOutput,
@@ -97,15 +97,15 @@ void THLENN_(LenSoftMax_updateGradInput)(
     real *output_ptr = output_data + t*dim;
     real *gradOutput_ptr = gradOutput_data + t*dim;
 
-    ptrdiff_t d, ld = (ptrdiff_t)len_data[t];
+    ptrdiff_t d, ld = dim - (ptrdiff_t)len_data[t];
     accreal sum = 0;
-    for (d = 0; d < ld; d++)
+    for (d = ld; d < dim; d++)
       sum += (accreal)gradOutput_ptr[d] * output_ptr[d];
 
-    for (d = 0; d < ld; d++)
+    for (d = ld; d < dim; d++)
       gradInput_ptr[d] = output_ptr[d] * (gradOutput_ptr[d] - sum);
 
-    for (d = ld; d < dim; d++)
+    for (d = 0; d < ld; d++)
       gradInput_ptr[d] = 0;
   }
 

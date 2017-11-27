@@ -65,3 +65,6 @@
 
 #include "generic/LenSoftMax.c"
 #include "THGenerateFloatTypes.h"
+
+#include "generic/TailLenSoftMax.c"
+#include "THGenerateFloatTypes.h"

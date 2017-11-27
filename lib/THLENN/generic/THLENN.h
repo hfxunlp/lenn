@@ -15,4 +15,17 @@ TH_API void THLENN_(LenSoftMax_updateGradInput)(
           THTensor *output,
           THIndexTensor *len);
 
+TH_API void THLENN_(TailLenSoftMax_updateOutput)(
+          THLENNState *state,
+          THTensor *input,
+          THTensor *output,
+          THIndexTensor *len);
+TH_API void THLENN_(TailLenSoftMax_updateGradInput)(
+          THLENNState *state,
+          THTensor *input,
+          THTensor *gradOutput,
+          THTensor *gradInput,
+          THTensor *output,
+          THIndexTensor *len);
+
 #endif
